@@ -94,4 +94,9 @@ public class Order {
 
         return orderWeight;
     }
+
+    @Override
+    public String toString() {
+        return "Order" + id + "(" + getRow() + "," + getColumn() + ")";
+    }
 }

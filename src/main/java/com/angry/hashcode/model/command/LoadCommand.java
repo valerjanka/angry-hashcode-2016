@@ -1,5 +1,8 @@
 package com.angry.hashcode.model.command;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.angry.hashcode.DistanceHelper;
 import com.angry.hashcode.io.input.InputDataSet;
 import com.angry.hashcode.model.Drone;
@@ -8,6 +11,8 @@ import com.angry.hashcode.model.Warehouse;
 import com.google.common.base.Joiner;
 
 public class LoadCommand extends Command {
+
+    private static final Logger logger = LoggerFactory.getLogger(LoadCommand.class);
 
     private static final Joiner JOINER = Joiner.on(" ");
 
@@ -56,6 +61,7 @@ public class LoadCommand extends Command {
         if (numTurnsLeft == 0) {
             drone.addProduct(product, amount);
             warehouse.moveToDrone(product, amount);
+            logger.warn("{} pieces of product {} moved to drone {} from warehouse {}", amount, product, drone, warehouse);
         }
     }
 

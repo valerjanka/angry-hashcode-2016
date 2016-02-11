@@ -79,4 +79,9 @@ public class Drone {
         }
         return load;
     }
+
+    @Override
+    public String toString() {
+        return "Drone" + id + "(" + getRow() + "," + getColumn() + ")";
+    }
 }

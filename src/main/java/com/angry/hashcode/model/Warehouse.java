@@ -69,4 +69,9 @@ public class Warehouse {
     public Collection<Product> getAvailableProductIds() {
         return PRODUCT_AVAILABILITY_MAP.keySet();
     }
+
+    @Override
+    public String toString() {
+        return "Warehouse" + id + "(" + getRow() + "," + getColumn() + ")";
+    }
 }

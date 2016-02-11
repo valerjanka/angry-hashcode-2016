@@ -1,14 +1,18 @@
 package com.angry.hashcode.model.command;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.angry.hashcode.DistanceHelper;
 import com.angry.hashcode.io.input.InputDataSet;
 import com.angry.hashcode.model.Drone;
 import com.angry.hashcode.model.Order;
 import com.angry.hashcode.model.Product;
-import com.angry.hashcode.model.Warehouse;
 import com.google.common.base.Joiner;
 
 public class DeliverCommand extends Command {
+
+    private static final Logger logger = LoggerFactory.getLogger(DeliverCommand.class);
 
     private static final Joiner JOINER = Joiner.on(" ");
 
@@ -61,6 +65,9 @@ public class DeliverCommand extends Command {
         if (numTurnsLeft == 0) {
             order.deliverProduct(product, amount);
             drone.removeProduct(product, amount);
+            drone.setRow(order.getRow());
+            drone.setColumn(order.getColumn());
+            logger.warn("Product {} delivered for order {} by drone {}", product, order, drone);
         }
     }
 
