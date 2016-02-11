@@ -4,7 +4,6 @@ import com.angry.hashcode.model.Order;
 import com.angry.hashcode.model.Product;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Created by valerii.ryzhuk on 2/11/2016.
@@ -23,10 +22,8 @@ public class KnapsackSolver {
         Collection<Product> products = order.getOrderedProductIds();
         KnapsackResult[] result = new KnapsackResult[load + 1];
 
-        Iterator<Product> iterator = products.iterator();
-        while (iterator.hasNext()) {
-            Product product = iterator.next();
-            for (int j = 1; j <= load; j++) {
+        for (Product product : products) {
+            for (int j = load; j >= 1; j--) {
                 int w = product.getWeight();
                 int itemAmount = order.getOrderedProductAmount(product);
                 int quantity = Math.min(itemAmount, j / w);
