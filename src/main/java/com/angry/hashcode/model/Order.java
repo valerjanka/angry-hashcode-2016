@@ -70,4 +70,16 @@ public class Order {
     public int getNumProductsOrdered() {
         return numProductsOrdered;
     }
+
+    public int getOfferWeight(){
+        int orderWeight = 0;
+
+        for (Product product : getOrderedProductIds()) {
+            int amount = getOrderedProductAmount(product);
+
+            orderWeight += product.getWeight() * amount;
+        }
+
+        return orderWeight;
+    }
 }
