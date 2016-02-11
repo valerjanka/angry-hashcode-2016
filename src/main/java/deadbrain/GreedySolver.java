@@ -2,8 +2,10 @@ package deadbrain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import deadbrain.spatial.GenericPoint;
 import deadbrain.spatial.KDTree;
@@ -37,15 +39,17 @@ public class GreedySolver {
     Map<Integer, KDTree<Integer, GenericPoint<Integer>, Integer>> shit = new HashMap<>();
    
     // init our shit
-    for (Order order : p.orders) {
-      for (int product : order.orderedItems) {
+    for (Warehouse w : p.warehouses) {
+     for (int product = 0; product < w.products.size(); product++) {
+        if (w.products.get(product) > 0) {
         if (shit.containsKey(product)) {
-          shit.get(product).put(new GenericPoint<>(order.x, order.y), product);
+          shit.get(product).put(new GenericPoint<>(w.x, w.y), product);
         } else {
           KDTree<Integer, GenericPoint<Integer>, Integer> subshit = 
               new KDTree<Integer, GenericPoint<Integer>, Integer>();
           shit.put(product, subshit);
-          subshit.put(new GenericPoint<>(order.x, order.y), product);
+          subshit.put(new GenericPoint<>(w.x, w.y), product);
+        }
         }
         
       }
@@ -69,6 +73,7 @@ public class GreedySolver {
     // generate drones
     for (int i = 0; i < p.D; i++ ) {
       Drone d = new Drone();
+      d.id = i;
       d.x = p.warehouses.get(0).x;
       d.y = p.warehouses.get(0).y;
       d.turnsLeft = 0;
@@ -77,17 +82,93 @@ public class GreedySolver {
     
     List<Command> commands = new ArrayList<Command>();
     
+    List<Shit> shits = new ArrayList<>();
+    
+    List<Shit> warehouseShit = new ArrayList<>();
+    
+    for (int orderId = 0; orderId < p.orders.size(); orderId++) {
+      Order order = p.orders.get(orderId);
+      for (int product : order.orderedItems) {
+         Shit shit = new Shit();
+         shit.id = orderId;
+         shit.x = order.x;
+         shit.y = order.y;
+         shit.p = product;
+         warehouseShit.add(shit);
+      }
+    }
+    
+   
+
+    
     for (int i = 0; i < p.deadline; i++) {
-      if (orders.size() > 0 && buzyDrones.size() > 0) {
+      if (shits.size() > 0 && buzyDrones.size() > 0) {
         if (freeDrones.size() > 0) {
+          Shit shit = shits.remove(0);
+          Drone drone = freeDrones.remove(0);
+          drone.targetX = shit.x;
+          drone.targetY = shit.y;
           
+          // we need to find shit to deliver:
+          Shit toBeDelivered = null;
+          for (int j = 0; j < warehouseShit.size(); i++) {
+            if (warehouseShit.get(j).p == shit.p) {
+               toBeDelivered = warehouseShit.remove(j);
+              drone.warehouseX = toBeDelivered.x;
+              drone.warehouseY = toBeDelivered.y;
+              drone.turnsLeft = dist(drone.x, shit.x, drone.y, shit.y);
+              break;
+            }
+          }
+          
+          
+          
+         // drone.turnsLeft = 1 + dist(drone.x, shit.x, drone.y, shit.y); // wrong find closes warehouseid, that has item;
+          drone.isLoad = true;
+          drone.p = shit.p;
+          buzyDrones.add(drone);
+          Load load = new Load();
+          load.droneId = drone.id;
+          load.nItems = 1;
+          load.productType = shit.p;
+          load.warehouseId = toBeDelivered.id;
+          drone.p = shit.p;
+        // FIXME:  load.warehouseId = shit
         }
+        HashSet<Integer> toBeFreed = new HashSet<>();
+        for (Drone d : buzyDrones) {
+          if (d.isLoad) {
+            if (d.turnsLeft == 0) {
+              Unload unload = new Unload();
+              unload.droneId = d.id;
+              unload.nItems = 1;
+              unload.productType = d.p;
+              commands.add(unload);
+              d.isLoad = false;
+              d.turnsLeft = 1 + dist(d.x, d.targetX, d.y, d.targetY);
+            } else {
+              d.turnsLeft -=1;
+            }
+          } else {
+            if (d.turnsLeft == 0) {
+              freeDrones.add(0, d);
+              toBeFreed.add(d.id);
+            } else {
+              d.turnsLeft -= 1;
+            }
+          }
+        }
+        // fuck
+        buzyDrones = buzyDrones.stream().filter(d -> !toBeFreed.contains(d.id)).collect(Collectors.toList());
       }
     }
     
     return commands;
   }
   
+  public int dist(int x1, int x2, int y1, int y2) {
+    return (int) Math.sqrt(  (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+  }
   
 
   public static void main(String[] args) {
@@ -102,6 +183,13 @@ public class GreedySolver {
 
 }
 
+class Shit {
+  public int id;
+  int x;
+  int y;
+  int p;
+}
+
 interface Command  {
   
 }
@@ -113,9 +201,9 @@ class Load implements Command {
   int nItems;
 }
 
-class Unoad implements Command {
+class Unload implements Command {
   int droneId;
-  int warehouseId;
+  int orderId;
   int productType;
   int nItems;
 }
@@ -133,11 +221,15 @@ class Wait implements Command {
 }
 
 class Drone {
+  int id;
   int x;
   int y;
   int turnsLeft;
-  int targetX;
+  int targetX; // target is order
   int targetY;
+  int warehouseX;
+  int warehouseY;
+  int p;
   boolean isLoad;
   
 }
