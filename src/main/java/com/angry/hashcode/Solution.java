@@ -69,7 +69,7 @@ public class Solution {
         System.out.println(inputDataSet.getNumOrders());
         System.out.println(inputDataSet.getOrder(3).getNumProductsOrdered());
         System.out.println(inputDataSet.getOrder(3).getOrderedProductIds());
-        System.out.println(inputDataSet.getOrder(3).getOrderedProductAmount(377));
+        System.out.println(inputDataSet.getOrder(3).getOrderedProductAmount(inputDataSet.getProduct(377)));
         System.out.println(inputDataSet.getOrder(3).getColumn());
 
         System.out.println("-----------------");

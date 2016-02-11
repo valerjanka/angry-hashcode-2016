@@ -15,7 +15,7 @@ public class Order {
 
     private int numProductsOrdered;
 
-    private final Map<Integer, Integer> ORDERED_PRODUCT_AMOUNT_MAP = Maps.newTreeMap();
+    private final Map<Product, Integer> ORDERED_PRODUCT_AMOUNT_MAP = Maps.newTreeMap(Product.PRODUCT_ID_COMPARATOR);
 
     public Order(int id) {
         this.id = id;
@@ -41,22 +41,22 @@ public class Order {
         this.column = column;
     }
 
-    public void addProductToOrder(int productId) {
-        Integer currentAmount = ORDERED_PRODUCT_AMOUNT_MAP.get(productId);
+    public void addProductToOrder(Product product) {
+        Integer currentAmount = ORDERED_PRODUCT_AMOUNT_MAP.get(product);
         if (currentAmount == null) {
             currentAmount = 0;
         }
         currentAmount++;
-        ORDERED_PRODUCT_AMOUNT_MAP.put(productId, currentAmount);
+        ORDERED_PRODUCT_AMOUNT_MAP.put(product, currentAmount);
         numProductsOrdered++;
     }
 
-    public Collection<Integer> getOrderedProductIds() {
+    public Collection<Product> getOrderedProductIds() {
         return ORDERED_PRODUCT_AMOUNT_MAP.keySet();
     }
 
-    public int getOrderedProductAmount(int productId) {
-        Integer amount = ORDERED_PRODUCT_AMOUNT_MAP.get(productId);
+    public int getOrderedProductAmount(Product product) {
+        Integer amount = ORDERED_PRODUCT_AMOUNT_MAP.get(product);
         if (amount == null) {
             amount = 0;
         }

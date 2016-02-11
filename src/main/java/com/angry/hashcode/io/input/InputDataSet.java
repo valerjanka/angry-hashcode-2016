@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.angry.hashcode.io.FastReader;
+import com.angry.hashcode.model.Drone;
 import com.angry.hashcode.model.Order;
 import com.angry.hashcode.model.Product;
 import com.angry.hashcode.model.Warehouse;
 import com.google.common.collect.Maps;
 
 public class InputDataSet {
+
+    private final Map<Integer, Drone> DRONE_MAP = Maps.newHashMap();
 
     private final Map<Integer, Product> PRODUCT_MAP = Maps.newHashMap();
 
@@ -39,7 +42,15 @@ public class InputDataSet {
 
         setNumRows(fr.nextInt());
         setNumColumns(fr.nextInt());
+
         setNumDrones(fr.nextInt());
+        for (int droneId = 0; droneId < getNumDrones(); droneId++) {
+            Drone drone = new Drone(droneId);
+            drone.setRow(0);
+            drone.setColumn(0);
+            DRONE_MAP.put(droneId, drone);
+        }
+
         setDeadline(fr.nextInt());
         setMaxLoad(fr.nextInt());
 
@@ -69,7 +80,7 @@ public class InputDataSet {
             int numProductsOrdered = fr.nextInt();
             for (int j = 0; j < numProductsOrdered; j++) {
                 int orderedProductId = fr.nextInt();
-                order.addProductToOrder(orderedProductId);
+                order.addProductToOrder(getProduct(orderedProductId));
             }
             ORDER_MAP.put(orderId, order);
         }
@@ -149,5 +160,9 @@ public class InputDataSet {
 
     public Order getOrder(int id) {
         return ORDER_MAP.get(id);
+    }
+
+    public Drone getDrone(int id) {
+        return DRONE_MAP.get(id);
     }
 }
