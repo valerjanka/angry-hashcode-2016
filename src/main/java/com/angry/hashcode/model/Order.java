@@ -42,13 +42,17 @@ public class Order {
     }
 
     public void addProductToOrder(Product product) {
+        addProductToOrder(product, 1);
+    }
+
+    public void addProductToOrder(Product product, int amount) {
         Integer currentAmount = ORDERED_PRODUCT_AMOUNT_MAP.get(product);
         if (currentAmount == null) {
             currentAmount = 0;
         }
-        currentAmount++;
+        currentAmount += amount;
         ORDERED_PRODUCT_AMOUNT_MAP.put(product, currentAmount);
-        numProductsOrdered++;
+        numProductsOrdered += amount;
     }
 
     public Collection<Product> getOrderedProductIds() {
