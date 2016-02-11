@@ -13,7 +13,7 @@ public class Warehouse {
 
     private int column;
 
-    private final Map<Integer, Integer> PRODUCT_AVAILABILITY_MAP = Maps.newTreeMap();
+    private final Map<Product, Integer> PRODUCT_AVAILABILITY_MAP = Maps.newTreeMap(Product.PRODUCT_ID_COMPARATOR);
 
     public Warehouse(int id) {
         this.id = id;
@@ -39,23 +39,23 @@ public class Warehouse {
         this.column = column;
     }
 
-    public int getProductAmount(int productId) {
-        Integer amount = PRODUCT_AVAILABILITY_MAP.get(productId);
+    public int getProductAmount(Product product) {
+        Integer amount = PRODUCT_AVAILABILITY_MAP.get(product);
         if (amount == null) {
             amount = 0;
         }
         return amount;
     }
 
-    public void setProductAmount(int productId, int amount) {
+    public void setProductAmount(Product product, int amount) {
         if (amount == 0) {
-            PRODUCT_AVAILABILITY_MAP.remove(productId);
+            PRODUCT_AVAILABILITY_MAP.remove(product);
         } else {
-            PRODUCT_AVAILABILITY_MAP.put(productId, amount);
+            PRODUCT_AVAILABILITY_MAP.put(product, amount);
         }
     }
 
-    public Collection<Integer> getAvailableProductIds() {
+    public Collection<Product> getAvailableProductIds() {
         return PRODUCT_AVAILABILITY_MAP.keySet();
     }
 }

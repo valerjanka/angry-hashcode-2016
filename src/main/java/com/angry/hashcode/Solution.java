@@ -65,7 +65,7 @@ public class Solution {
         System.out.println(inputDataSet.getNumProducts());
         System.out.println(inputDataSet.getWarehouse(2).getRow());
         System.out.println(inputDataSet.getWarehouse(2).getAvailableProductIds());
-        System.out.println(inputDataSet.getWarehouse(2).getProductAmount(3));
+        System.out.println(inputDataSet.getWarehouse(2).getProductAmount(inputDataSet.getProduct(3)));
         System.out.println(inputDataSet.getNumOrders());
         System.out.println(inputDataSet.getOrder(3).getNumProductsOrdered());
         System.out.println(inputDataSet.getOrder(3).getOrderedProductIds());

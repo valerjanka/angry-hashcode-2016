@@ -67,7 +67,7 @@ public class InputDataSet {
             warehouse.setColumn(fr.nextInt());
             for (int productId = 0; productId < getNumProducts(); productId++) {
                 int amount = fr.nextInt();
-                warehouse.setProductAmount(productId, amount);
+                warehouse.setProductAmount(getProduct(productId), amount);
             }
             WAREHOUSE_MAP.put(warehouseId, warehouse);
         }
