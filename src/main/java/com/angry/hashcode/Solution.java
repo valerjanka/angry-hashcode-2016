@@ -16,6 +16,7 @@ import com.angry.hashcode.model.command.DeliverCommand;
 import com.angry.hashcode.model.command.LoadCommand;
 import com.angry.hashcode.model.command.UnloadCommand;
 import com.angry.hashcode.model.command.WaitCommand;
+import com.angry.hashcode.simulation.Simulation;
 import com.google.common.collect.Lists;
 
 /**
@@ -86,5 +87,25 @@ public class Solution {
 
         //        in = new FastReader(inputFileName);
         //        out = new FastWriter("out.txt");
+
+        System.out.println("======================");
+        inputDataSet = new InputDataSet("input_files/example_1.in");
+        commands = Lists.newArrayList();
+        commands.add(new LoadCommand(inputDataSet.getDrone(0), inputDataSet.getWarehouse(0), inputDataSet.getProduct(0), 4));
+        commands.add(new DeliverCommand(inputDataSet.getDrone(0), inputDataSet.getOrder(1), inputDataSet.getProduct(0), 3));
+
+        Simulation sim = new Simulation(inputDataSet, commands);
+        while (sim.hasNextTurn()) {
+            sim.nextTurn();
+        }
+
+        System.out.println(inputDataSet.getOrder(0).isFulfilled()); // false
+        System.out.println(inputDataSet.getOrder(1).isFulfilled()); // true
+        System.out.println(inputDataSet.getDrone(0).getProductCarriedAmount(inputDataSet.getProduct(0))); // 1
+
+        // output results
+        for (Command c : commands) {
+            System.out.println(c.stringRepr());
+        }
     }
 }

@@ -51,8 +51,20 @@ public class Order {
             currentAmount = 0;
         }
         currentAmount += amount;
-        ORDERED_PRODUCT_AMOUNT_MAP.put(product, currentAmount);
+        if (currentAmount == 0) {
+            ORDERED_PRODUCT_AMOUNT_MAP.remove(product);
+        } else {
+            ORDERED_PRODUCT_AMOUNT_MAP.put(product, currentAmount);
+        }
         numProductsOrdered += amount;
+    }
+
+    public void deliverProduct(Product product, int amount) {
+        addProductToOrder(product, -amount);
+    }
+
+    public boolean isFulfilled() {
+        return numProductsOrdered == 0;
     }
 
     public Collection<Product> getOrderedProductIds() {

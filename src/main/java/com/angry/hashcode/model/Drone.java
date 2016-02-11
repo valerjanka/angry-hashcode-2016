@@ -65,6 +65,13 @@ public class Drone {
         setProductCarriedAmount(product, newAmount);
     }
 
+    public void removeProduct(Product product, int amount) {
+        int currentAmount = getProductCarriedAmount(product);
+        assert currentAmount >= amount;
+        int newAmount = currentAmount - amount;
+        setProductCarriedAmount(product, newAmount);
+    }
+
     public int getLoad() {
         int load = 0;
         for (int amount : PRODUCT_CARRIED_MAP.values()) {

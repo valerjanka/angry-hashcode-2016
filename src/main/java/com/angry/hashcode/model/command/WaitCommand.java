@@ -14,9 +14,12 @@ public class WaitCommand extends Command {
 
     private int waitDuration;
 
+    private int waitDurationLeft;
+
     public WaitCommand(Drone drone, int waitDuration) {
         this.drone = drone;
         this.waitDuration = waitDuration;
+        this.waitDurationLeft = waitDuration;
     }
 
     @Override
@@ -28,5 +31,25 @@ public class WaitCommand extends Command {
     @Override
     public String stringRepr() {
         return JOINER.join(drone.getId(), COMMAND_TYPE, waitDuration);
+    }
+
+    public int getNumTurnsLeft() {
+        return waitDurationLeft;
+    }
+
+    @Override
+    public boolean hasNextTurn() {
+        return waitDurationLeft > 0;
+    }
+
+    @Override
+    public void onNextTurn() {
+        assert hasNextTurn();
+        waitDurationLeft--;
+    }
+
+    @Override
+    public Drone getDrone() {
+        return drone;
     }
 }

@@ -55,6 +55,17 @@ public class Warehouse {
         }
     }
 
+    public void moveToDrone(Product product, int amount) {
+        int currentAmount = getProductAmount(product);
+        assert currentAmount >= amount;
+        setProductAmount(product, currentAmount - amount);
+    }
+
+    public void moveFromDrone(Product product, int amount) {
+        int currentAmount = getProductAmount(product);
+        setProductAmount(product, currentAmount + amount);
+    }
+
     public Collection<Product> getAvailableProductIds() {
         return PRODUCT_AVAILABILITY_MAP.keySet();
     }
